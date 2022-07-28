@@ -2,7 +2,7 @@
 > Authenticate your wallet by signing and verifying messages.
 
 ## What
-A simple library to help authenticate addresses via signing + ecrecover (eliptic curve recover) the signature for the public key.
+A simple library to help authenticate addresses via signing + ecrecover (elliptic curve recover) the signature for the public key.
 
 ## Why
 Since [Web3Auth](https://github.com/Web3Auth/Web3Auth) is only in TS and my current projects are written in Rust. So, I needed a way to be able to verify a wallet, without sending a private key(s) over an application (e.g., copy and paste), in Rust.
