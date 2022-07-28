@@ -20,7 +20,41 @@ pub async fn setup_signer(
         }
     }
 }
-   
+
+pub async fn create_sig(middleware: SignerMiddleware<Provider<Http>, Wallet<SigningKey>>, msg: &str) -> Signature {
+    // sign message from your wallet and print out signature produced.
+    let signature: Signature = middleware.signer().sign_message(msg).await.unwrap();
+    println!("Produced signature {}", signature);
+
+    // verify the signature produced from your wallet.
+    signature.verify(msg, middleware.address()).unwrap();
+    println!("Verified signature produced by {:?}!", middleware.address());
+
+    signature
+}
+
+/// Recovers pub key from Signature.
+/// 
+/// Example:
+/// 
+/// The signature: 
+/// r: 71031592387720320433450688414937280839659347503695324159450811751904079575653
+/// s: 42005310148794597377403683159426268297577400373531751122007758979183741542804
+/// v: 27
+/// 
+/// Gives the signer: 
+/// 0xdcd49c36e69bf85fa9c5a25dea9455602c0b289e
+pub fn verify_sig(signature: Signature, msg: &str) -> Option<H160> {
+    let r: Result<H160, SignatureError> = signature.recover(msg);
+    match r {
+        Ok(signer) => return Some(signer),
+        Err(_) => return None,
+    }
+}
+
+
+/// Converts signature string into [r, s, v] and recovers pub key.
+/// 
 /// Example:
 /// 
 /// The signature: 
@@ -28,9 +62,9 @@ pub async fn setup_signer(
 /// 
 /// Gives the signer: 
 /// 0xdcd49c36e69bf85fa9c5a25dea9455602c0b289e
-pub fn confirm_pub_key(signature: &str, msg: &str) -> Option<H160> {
+pub fn verify_sig_str(signature: &str, msg: &str) -> Option<H160> {
     let sig: Signature = FromStr::from_str(signature).unwrap();
-    println!("{:?}", signature);
+    println!("{:?}", sig);
     let r: Result<H160, SignatureError> = sig.recover(msg);
     match r {
         Ok(signer) => return Some(signer),
