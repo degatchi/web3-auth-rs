@@ -1,6 +1,7 @@
 use std::str::FromStr;
 use ethers::{prelude::{*, k256::ecdsa::SigningKey}};
 
+/// Used to allow a private key execute txs.
 pub async fn setup_signer(
     priv_key: String,
     provider: Provider<Http>
